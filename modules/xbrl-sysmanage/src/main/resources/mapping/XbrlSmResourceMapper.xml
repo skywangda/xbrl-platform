@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changhong.xbrl.sysmanage.dao.XbrlSmResourceMapper">
+    <!-- XbrlSmResource的resultMap,column是给数据库列起的别名,它对应property类的属性-->
+    <resultMap id="result_XbrlSmResource_Map" type="com.changhong.xbrl.sysmanage.domain.XbrlSmResource">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="url" property="url" />
+        <result column="menuid" property="menuid" />
+        <result column="ordering" property="ordering" />
+        <result column="type" property="type" />
+        <result column="state" property="state" />
+        <result column="remark" property="remark" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="parent_id" property="parentId" />
+    </resultMap>
+
+    <!-- 数据库中表名为:xbrl_sm_resource的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->
+    <sql id="xbrl_sm_resource_Column">
+        xbrl_sm_resource.id as id
+        ,xbrl_sm_resource.name as name
+        ,xbrl_sm_resource.url as url
+        ,xbrl_sm_resource.menuid as menuid
+        ,xbrl_sm_resource.ordering as ordering
+        ,xbrl_sm_resource.type as type
+        ,xbrl_sm_resource.state as state
+        ,xbrl_sm_resource.remark as remark
+        ,xbrl_sm_resource.create_user as create_user
+        ,xbrl_sm_resource.create_time as create_time
+        ,xbrl_sm_resource.update_user as update_user
+        ,xbrl_sm_resource.update_time as update_time
+        ,xbrl_sm_resource.parent_id as parent_id
+    </sql>
+
+    <!--获得类名为:XbrlSmResource对应的数据库表的数据总行数 -->
+    <select id="getCount" parameterType="hashmap" resultType="java.lang.Integer">
+        select count(*) from xbrl_sm_resource h
+        <where>
+            <if test="name!=null">
+                and h.name = #{name}
+            </if>
+            <if test="state!=null">
+                and h.state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <!--获得类名为:XbrlSmResource对应的数据库表的数据总行数 -->
+    <select id="selectXbrlSmResourceList" parameterType="hashmap" resultMap="result_XbrlSmResource_Map">
+        select <include refid="xbrl_sm_resource_Column" /> from xbrl_sm_resource
+
+        <where>
+            <if test="name!=null">
+                and name = #{name}
+            </if>
+            <if test="state!=null">
+                and state = #{state}
+            </if>
+        </where>
+        order by create_time  desc
+        limit #{startNumber},#{pagzSize}
+    </select>
+
+    <select id="selectXbrlSmResourceListByNameAndUrl" parameterType="String" resultMap="result_XbrlSmResource_Map">
+        select <include refid="xbrl_sm_resource_Column" /> from xbrl_sm_resource
+
+        <where>
+            <if test="name!=null">
+                and name = #{name}
+            </if>
+            <if test="url!=null">
+                and url = #{url}
+            </if>
+        </where>
+    </select>
+    <!-- 将XbrlSmResource中属性值不为null的数据,插入到对应数据库的表中-->
+    <insert id="insertXbrlSmResource" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmResource">
+        insert into xbrl_sm_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="url != null">url,</if>
+            <if test="menuid != null">menuid,</if>
+            <if test="type != null">type,</if>
+            <if test="state != null">state,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="parentId != null">parent_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null"> #{name},</if>
+            <if test="url != null"> #{url},</if>
+            <if test="menuid != null"> #{menuid},</if>
+            <if test="type != null"> #{type},</if>
+            <if test="state != null"> #{state},</if>
+            <if test="remark != null"> #{remark},</if>
+            <if test="createUser != null"> #{createUser},</if>
+            <if test="createTime != null"> #{createTime},</if>
+            <if test="updateUser != null"> #{updateUser},</if>
+            <if test="updateTime != null"> #{updateTime},</if>
+            <if test="parentId != null"> #{parentId},</if>
+        </trim>
+    </insert>
+
+    <!-- 通过XbrlSmResource的id将数据库表中对应的数据删除-->
+    <delete id="deleteXbrlSmResourceByIds">
+        delete from xbrl_sm_resource
+        where id in
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+    <select id="selectXbrlSmResourceById" parameterType="java.lang.Integer" resultMap="result_XbrlSmResource_Map">
+        select <include refid="xbrl_sm_resource_Column" /> from xbrl_sm_resource
+        <where>
+                and id = #{Id}
+        </where>
+    </select>
+
+    <!-- 返回结果集 -->
+    <resultMap type="com.changhong.xbrl.sysmanage.domain.XbrlSmResource" id="smResource_listTree">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="url" property="url" />
+        <result column="menuid" property="menuid" />
+        <result column="ordering" property="ordering" />
+        <result column="type" property="type" />
+        <result column="state" property="state" />
+        <result column="remark" property="remark" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="parent_id" property="parentId" />
+        <collection property="children"  column="{id=id,type=typed}" ofType="com.changhong.xbrl.sysmanage.domain.XbrlSmResource"
+                    select="selectXbrlSmResourceByParentId"></collection>
+    </resultMap>
+
+    <!-- 返回结果集 -->
+    <resultMap type="com.changhong.xbrl.sysmanage.domain.XbrlSmResource" id="smResource_listTreeByRoleId">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="url" property="url" />
+        <result column="menuid" property="menuid" />
+        <result column="ordering" property="ordering" />
+        <result column="type" property="type" />
+        <result column="state" property="state" />
+        <result column="remark" property="remark" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="parent_id" property="parentId" />
+        <collection property="children"  column="{id=id,roleId=selectRoleId}" ofType="com.changhong.xbrl.sysmanage.domain.XbrlSmResource"
+                    select="selectXbrlSmResourceByRoleId"></collection>
+    </resultMap>
+
+
+
+    <!--查询所有，使用resultMap返回结果集，将数据组装成树形结构  -->
+    <select id="selectXbrlSmResourceAllByParentId" resultMap="smResource_listTree">
+        <bind name="pattern" value="'%' + _parameter.key + '%'" />
+       SELECT *,#{typed} AS typed FROM `xbrl_sm_resource` t WHERE t.`parent_id`=#{parentId}
+        and (t.name like #{pattern} or t.url LIKE  #{pattern})
+    </select>
+
+    <!--查询所有，使用resultMap返回结果集，将数据组装成树形结构  -->
+    <select id="selectXbrlSmResourceListByRoleId" resultMap="smResource_listTreeByRoleId">
+      SELECT t.*, t1.`role_id` as roleId,#{roleId} as selectRoleId  FROM `xbrl_sm_resource` T
+       LEFT JOIN (SELECT * FROM`xbrl_sm_role_resource`  WHERE `role_id` = #{roleId}) t1
+       ON t.`id` = t1.`resource_id`
+       WHERE t.`parent_id` = 0
+    </select>
+
+    <!--排除按钮的级别的控件  -->
+    <select id="selectXbrlSmResourceByParentId" parameterType="java.util.Map" resultMap="smResource_listTree">
+         select *,#{type} AS typed  from xbrl_sm_resource where parent_id=#{id} AND TYPE!=#{type}
+    </select>
+    <!--排除按钮的级别的控件  -->
+    <select id="selectXbrlSmResourceByRoleId" parameterType="java.util.Map" resultMap="smResource_listTreeByRoleId">
+        SELECT t.*, t1.`role_id` as roleId ,#{roleId} as selectRoleId FROM `xbrl_sm_resource` T
+       LEFT JOIN (SELECT * FROM`xbrl_sm_role_resource`  WHERE `role_id` = #{roleId}) t1
+       ON t.`id` = t1.`resource_id`
+       WHERE t.`parent_id` = #{id}
+    </select>
+    <!--批量禁用用户-->
+    <update id="disableOrEnableXbrlSmResource">
+        update xbrl_sm_resource set
+        state = #{state}
+        where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <!--更新角色Role信息-->
+    <update id="updateXbrlSmResource" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmResource">
+        update xbrl_sm_resource set
+        name=#{name}
+        ,remark=#{remark}
+        ,url=#{url}
+        ,menuid=#{menuid}
+        ,remark=#{remark}
+        ,update_user=#{updateUser}
+        ,update_time=#{updateTime}
+        where id=#{id}
+    </update>
+</mapper>

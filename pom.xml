@@ -15,8 +15,10 @@
         <module>xbrl-platform-config</module>
         <module>xbrl-platform-hystrix</module>
         <module>xbrl-platform-gateway</module>
-        <module>modules/xbrl-generator-service</module>
-        <module>modules/xbrl-sysmanage-service</module>
+        <module>xbrl-platform-common</module>
+        <module>modules/xbrl-generator</module>
+        <module>modules/xbrl-sysmanage</module>
+        <module>modules/xbrl-schedulejob</module>
     </modules>
 
 </project>

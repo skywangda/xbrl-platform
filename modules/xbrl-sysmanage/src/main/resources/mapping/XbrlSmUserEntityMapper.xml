@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changhong.xbrl.sysmanage.dao.XbrlSmUserEntityMapper">
+    <!-- XbrlSmUserEntity的resultMap,column是给数据库列起的别名,它对应property类的属性-->
+    <resultMap id="result_XbrlSmUserEntity_Map" type="com.changhong.xbrl.sysmanage.domain.XbrlSmUserEntity">
+        <result column="entity_id" property="entityId" />
+        <result column="user_id" property="userId" />
+    </resultMap>
+
+    <!-- 数据库中表名为:xbrl_sm_user_entity的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->
+    <sql id="xbrl_sm_user_entity_Column">
+        xbrl_sm_user_entity.entity_id as entity_id
+        ,xbrl_sm_user_entity.user_id as user_id
+    </sql>
+
+    <!--获得类名为:XbrlSmUserEntity对应的数据库表的数据总行数 -->
+    <select id="getXbrlSmUserEntityRowCount" resultType="java.lang.Long">
+        select count(*) from xbrl_sm_user_entity
+    </select>
+    <!-- 获得类名为:XbrlSmUserEntity对应数据库中表的数据集合 -->
+    <select id="selectXbrlSmUserEntity" resultMap="result_XbrlSmUserEntity_Map">
+        select 
+        <include refid="xbrl_sm_user_entity_Column" /> 
+        from xbrl_sm_user_entity
+    </select> 
+
+    <!-- 将XbrlSmUserEntity插入到对应数据库的表中,包括属性值为null的数据-->
+    <insert id="insertXbrlSmUserEntity" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmUserEntity">
+        insert into xbrl_sm_user_entity(entity_id,user_id) 
+        values(#{entityId},#{userId})
+    </insert>
+
+    <!-- 将XbrlSmUserEntity中属性值不为null的数据,插入到对应数据库的表中-->
+    <insert id="insertNonEmptyXbrlSmUserEntity" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmUserEntity">
+        insert into xbrl_sm_user_entity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entityId != null">entity_id,</if>
+            <if test="userId != null">user_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entityId != null"> #{entityId},</if>
+            <if test="userId != null"> #{userId},</if>
+        </trim>
+    </insert>
+
+</mapper>

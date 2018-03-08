@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changhong.xbrl.sysmanage.dao.XbrlSmCompanyMapper">
+    <!-- XbrlSmCompany的resultMap,column是给数据库列起的别名,它对应property类的属性-->
+    <resultMap id="result_XbrlSmCompany_Map" type="com.changhong.xbrl.sysmanage.domain.XbrlSmCompany">
+        <id column="id" property="id" />
+        <result column="identifier_scheme" property="identifierScheme" />
+        <result column="company_code" property="companyCode" />
+        <result column="company_type" property="companyType" />
+        <result column="company_name" property="companyName" />
+        <result column="short_name" property="shortName" />
+        <result column="name_space_prefix" property="nameSpacePrefix" />
+        <result column="company_info" property="companyInfo" />
+        <result column="state" property="state" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="mark" property="mark" />
+        <result column="consolidated_code" property="consolidatedCode" />
+        <result column="separate_code" property="separateCode" />
+        <result column="parent_id" property="parentId" />
+        <result column="business_lic" property="businessLic" />
+    </resultMap>
+
+    <!-- 数据库中表名为:xbrl_sm_company的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->
+    <sql id="xbrl_sm_company_Column">
+        xbrl_sm_company.id as id
+        ,xbrl_sm_company.identifier_scheme as identifier_scheme
+        ,xbrl_sm_company.company_code as company_code
+        ,xbrl_sm_company.company_type as company_type
+        ,xbrl_sm_company.company_name as company_name
+        ,xbrl_sm_company.short_name as short_name
+        ,xbrl_sm_company.name_space_prefix as name_space_prefix
+        ,xbrl_sm_company.company_info as company_info
+        ,xbrl_sm_company.state as state
+        ,xbrl_sm_company.create_user as create_user
+        ,xbrl_sm_company.create_time as create_time
+        ,xbrl_sm_company.update_user as update_user
+        ,xbrl_sm_company.update_time as update_time
+        ,xbrl_sm_company.mark as mark
+        ,xbrl_sm_company.consolidated_code as consolidated_code
+        ,xbrl_sm_company.separate_code as separate_code
+        ,xbrl_sm_company.parent_id as parent_id
+        ,xbrl_sm_company.business_lic as business_lic
+    </sql>
+
+
+    <!--获得类名为:XbrlSmRole对应的数据库表的数据总行数 -->
+    <select id="getCount" parameterType="hashmap" resultType="java.lang.Integer">
+        <if test="name!=null">
+            <bind name="pattern" value="'%' + _parameter.name + '%'" />
+        </if>
+        select count(*) from xbrl_sm_company
+        <where>
+            1=1
+            <if test="name!=null">
+                and company_name like #{pattern}
+            </if>
+            <if test="state!=null">
+                and state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <!--XbrlSmRole数据分页查询-->
+    <select id="selectXbrlSmCompanyList" parameterType="hashmap" resultMap="result_XbrlSmCompany_Map">
+        <if test="name!=null">
+            <bind name="pattern" value="'%' + _parameter.name + '%'" />
+        </if>
+        select
+        <include refid="xbrl_sm_company_Column" />
+        from xbrl_sm_company
+        <where>
+            1=1
+            <if test="name!=null">
+                and company_name like #{pattern}
+            </if>
+            <if test="state!=null">
+                and state = #{state}
+            </if>
+        </where>
+        <if test="pagzSize!=null">
+            order by id desc
+            limit #{startNumber},#{pagzSize}
+        </if>
+
+    </select>
+
+    <!--获得类名为:XbrlSmCompany对应的数据库表的数据总行数 -->
+    <select id="getXbrlSmCompanyRowCount" resultType="java.lang.Long">
+        select count(id) from xbrl_sm_company
+    </select>
+    <!-- 获得类名为:XbrlSmCompany对应数据库中表的数据集合 -->
+    <select id="selectXbrlSmCompany" resultMap="result_XbrlSmCompany_Map">
+        select 
+        <include refid="xbrl_sm_company_Column" /> 
+        from xbrl_sm_company
+    </select> 
+
+    <!-- 获得一个XbrlSmCompany对象,以参数XbrlSmCompany对象中不为空的属性作为条件进行查询-->
+    <select id="selectXbrlSmCompanyByObj" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmCompany" resultMap="result_XbrlSmCompany_Map">
+        select 
+            <include refid="xbrl_sm_company_Column" /> 
+        from xbrl_sm_company
+        <where>
+            <if test="parentId != null "> and xbrl_sm_company.parent_id = #{parentId}</if>
+            <if test="consolidatedCode != null "> and xbrl_sm_company.consolidated_code = #{consolidatedCode}</if>
+            <if test="separateCode != null "> and xbrl_sm_company.separate_code = #{separateCode}</if>
+            <if test="mark != null "> and xbrl_sm_company.mark = #{mark}</if>
+            <if test="updateTime != null "> and xbrl_sm_company.update_time = #{updateTime}</if>
+            <if test="updateUser != null "> and xbrl_sm_company.update_user = #{updateUser}</if>
+            <if test="createTime != null "> and xbrl_sm_company.create_time = #{createTime}</if>
+            <if test="createUser != null "> and xbrl_sm_company.create_user = #{createUser}</if>
+            <if test="state != null "> and xbrl_sm_company.state = #{state}</if>
+            <if test="companyInfo != null "> and xbrl_sm_company.company_info = #{companyInfo}</if>
+            <if test="nameSpacePrefix != null "> and xbrl_sm_company.name_space_prefix = #{nameSpacePrefix}</if>
+            <if test="shortName != null "> and xbrl_sm_company.short_name = #{shortName}</if>
+            <if test="companyName != null "> and xbrl_sm_company.company_name = #{companyName}</if>
+            <if test="companyType != null "> and xbrl_sm_company.company_type = #{companyType}</if>
+            <if test="companyCode != null "> and xbrl_sm_company.company_code = #{companyCode}</if>
+            <if test="identifierScheme != null "> and xbrl_sm_company.identifier_scheme = #{identifierScheme}</if>
+            <if test="id != null "> and xbrl_sm_company.id = #{id}</if>
+            <if test="businessLic != null "> and xbrl_sm_company.business_lic = #{businessLic}</if>
+        </where>
+    </select>
+
+
+    <!-- 获得一组XbrlSmCompany对象,以参数XbrlSmCompany对象中不为空的属性作为条件进行查询-->
+    <select id="selectXbrlSmCompanyListByObj" parameterType="hashmap" resultMap="result_XbrlSmCompany_Map">
+        select
+        <include refid="xbrl_sm_company_Column" />
+        from xbrl_sm_company
+        <where>
+            <if test="parentId != null "> and xbrl_sm_company.parent_id = #{parentId}</if>
+            <if test="consolidatedCode != null "> and xbrl_sm_company.consolidated_code = #{consolidatedCode}</if>
+            <if test="separateCode != null "> and xbrl_sm_company.separate_code = #{separateCode}</if>
+            <if test="mark != null "> and xbrl_sm_company.mark = #{mark}</if>
+            <if test="updateTime != null "> and xbrl_sm_company.update_time = #{updateTime}</if>
+            <if test="updateUser != null "> and xbrl_sm_company.update_user = #{updateUser}</if>
+            <if test="createTime != null "> and xbrl_sm_company.create_time = #{createTime}</if>
+            <if test="createUser != null "> and xbrl_sm_company.create_user = #{createUser}</if>
+            <if test="state != null "> and xbrl_sm_company.state = #{state}</if>
+            <if test="companyInfo != null "> and xbrl_sm_company.company_info = #{companyInfo}</if>
+            <if test="nameSpacePrefix != null "> and xbrl_sm_company.name_space_prefix = #{nameSpacePrefix}</if>
+            <if test="shortName != null "> and xbrl_sm_company.short_name = #{shortName}</if>
+            <if test="companyName != null "> and xbrl_sm_company.company_name = #{companyName}</if>
+            <if test="companyType != null "> and xbrl_sm_company.company_type = #{companyType}</if>
+            <if test="companyCode != null "> and xbrl_sm_company.company_code = #{companyCode}</if>
+            <if test="identifierScheme != null "> and xbrl_sm_company.identifier_scheme = #{identifierScheme}</if>
+            <if test="id != null "> and xbrl_sm_company.id = #{id}</if>
+            <if test="businessLic != null "> and xbrl_sm_company.business_lic = #{businessLic}</if>
+        </where>
+    </select>
+
+
+
+
+    <!-- 通过XbrlSmCompany的id获得对应数据库中表的数据对象-->
+    <select id="selectXbrlSmCompanyById" parameterType="java.lang.Double" resultMap="result_XbrlSmCompany_Map">
+        select 
+            <include refid="xbrl_sm_company_Column" /> 
+        from xbrl_sm_company
+        where xbrl_sm_company.id = #{id}
+    </select> 
+
+    <!-- 将XbrlSmCompany插入到对应数据库的表中,包括属性值为null的数据-->
+
+    <insert id="insertXbrlSmCompany" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmCompany">
+        insert into xbrl_sm_company(id,identifier_scheme,company_code,company_type,company_name,short_name,name_space_prefix,company_info,state,create_user,create_time,update_user,update_time,mark,consolidated_code,separate_code,parent_id,business_lic)
+        values(#{id},#{identifierScheme},#{companyCode},#{companyType},#{companyName},#{shortName},#{nameSpacePrefix},#{companyInfo},#{state},#{createUser},#{createTime},#{updateUser},#{updateTime},#{mark},#{consolidatedCode},#{separateCode},#{parentId},#{businessLic})
+    </insert>
+
+    <!-- 将XbrlSmCompany中属性值不为null的数据,插入到对应数据库的表中-->
+    <insert id="insertNonEmptyXbrlSmCompany" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmCompany">
+        insert into xbrl_sm_company
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="identifierScheme != null">identifier_scheme,</if>
+            <if test="companyCode != null">company_code,</if>
+            <if test="companyType != null">company_type,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="shortName != null">short_name,</if>
+            <if test="nameSpacePrefix != null">name_space_prefix,</if>
+            <if test="companyInfo != null">company_info,</if>
+            <if test="state != null">state,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="mark != null">mark,</if>
+            <if test="consolidatedCode != null">consolidated_code,</if>
+            <if test="separateCode != null">separate_code,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="businessLic != null">business_lic,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null"> #{id},</if>
+            <if test="identifierScheme != null"> #{identifierScheme},</if>
+            <if test="companyCode != null"> #{companyCode},</if>
+            <if test="companyType != null"> #{companyType},</if>
+            <if test="companyName != null"> #{companyName},</if>
+            <if test="shortName != null"> #{shortName},</if>
+            <if test="nameSpacePrefix != null"> #{nameSpacePrefix},</if>
+            <if test="companyInfo != null"> #{companyInfo},</if>
+            <if test="state != null"> #{state},</if>
+            <if test="createUser != null"> #{createUser},</if>
+            <if test="createTime != null"> #{createTime},</if>
+            <if test="updateUser != null"> #{updateUser},</if>
+            <if test="updateTime != null"> #{updateTime},</if>
+            <if test="mark != null"> #{mark},</if>
+            <if test="consolidatedCode != null"> #{consolidatedCode},</if>
+            <if test="separateCode != null"> #{separateCode},</if>
+            <if test="parentId != null"> #{parentId},</if>
+            <if test="businessLic != null"> #{businessLic},</if>
+        </trim>
+    </insert>
+
+    <!-- 通过XbrlSmCompany的id将数据库表中对应的数据删除-->
+    <delete id="deleteXbrlSmCompanyById" parameterType="java.lang.Double">
+        delete from xbrl_sm_company
+        where id = #{id}
+    </delete>
+
+    <!-- 通过XbrlSmCompany的id将XbrlSmCompany的数据更新到数据库中对应的表,包括值null的数据-->
+    <update id="updateXbrlSmCompanyById" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmCompany">
+        update xbrl_sm_company set
+            identifier_scheme=#{identifierScheme}
+            ,company_code=#{companyCode}
+            ,company_type=#{companyType}
+            ,company_name=#{companyName}
+            ,short_name=#{shortName}
+            ,name_space_prefix=#{nameSpacePrefix}
+            ,company_info=#{companyInfo}
+            ,state=#{state}
+            ,create_user=#{createUser}
+            ,create_time=#{createTime}
+            ,update_user=#{updateUser}
+            ,update_time=#{updateTime}
+            ,mark=#{mark}
+            ,consolidated_code=#{consolidatedCode}
+            ,separate_code=#{separateCode}
+            ,parent_id=#{parentId}
+            ,business_lic=#{businessLic}
+        where id=#{id}
+    </update>
+
+    <!-- 通过XbrlSmCompany的id将XbrlSmCompany中属性值不为null的数据更新到数据库对应的表中-->
+    <update id="updateNonEmptyXbrlSmCompanyById" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmCompany">
+        update xbrl_sm_company
+        <set>
+            <if test="identifierScheme != null">
+                identifier_scheme=#{identifierScheme},
+            </if>
+            <if test="companyCode != null">
+                company_code=#{companyCode},
+            </if>
+            <if test="companyType != null">
+                company_type=#{companyType},
+            </if>
+            <if test="companyName != null">
+                company_name=#{companyName},
+            </if>
+            <if test="shortName != null">
+                short_name=#{shortName},
+            </if>
+            <if test="nameSpacePrefix != null">
+                name_space_prefix=#{nameSpacePrefix},
+            </if>
+            <if test="companyInfo != null">
+                company_info=#{companyInfo},
+            </if>
+            <if test="state != null">
+                state=#{state},
+            </if>
+            <if test="createUser != null">
+                create_user=#{createUser},
+            </if>
+            <if test="createTime != null">
+                create_time=#{createTime},
+            </if>
+            <if test="updateUser != null">
+                update_user=#{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime},
+            </if>
+            <if test="mark != null">
+                mark=#{mark},
+            </if>
+            <if test="consolidatedCode != null">
+                consolidated_code=#{consolidatedCode},
+            </if>
+            <if test="separateCode != null">
+                separate_code=#{separateCode},
+            </if>
+            <if test="parentId != null">
+                  parent_id=#{parentId},
+            </if>
+            <if test="businessLic != null">
+                business_lic=#{businessLic},
+             </if>
+        </set>
+        where id=#{id}
+    </update>
+
+</mapper>

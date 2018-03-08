@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changhong.xbrl.sysmanage.dao.XbrlSmRoleMapper">
+
+    <!-- XbrlSmRole的resultMap,column是给数据库列起的别名,它对应property类的属性-->
+    <resultMap id="result_XbrlSmRole_Map" type="com.changhong.xbrl.sysmanage.domain.XbrlSmRole">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="state" property="state" />
+        <result column="remark" property="remark" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 数据库中表名为:xbrl_sm_role的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->
+    <sql id="xbrl_sm_role_Column">
+        xbrl_sm_role.id as id
+        ,xbrl_sm_role.name as name
+        ,xbrl_sm_role.state as state
+        ,xbrl_sm_role.remark as remark
+        ,xbrl_sm_role.create_user as create_user
+        ,xbrl_sm_role.create_time as create_time
+        ,xbrl_sm_role.update_user as update_user
+        ,xbrl_sm_role.update_time as update_time
+    </sql>
+
+    <!--获得类名为:XbrlSmRole对应的数据库表的数据总行数 -->
+    <select id="getCount" parameterType="hashmap" resultType="java.lang.Integer">
+        select count(*) from xbrl_sm_role
+        <where>
+            <if test="name!=null">
+                and name like  CONCAT('%',#{name},'%' )
+            </if>
+            <if test="street!=null">
+                and state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <!--XbrlSmRole数据分页查询-->
+    <select id="selectXbrlSmRoleList" parameterType="hashmap" resultMap="result_XbrlSmRole_Map">
+        select
+        <include refid="xbrl_sm_role_Column" />
+        from xbrl_sm_role
+        <where>
+            <if test="name!=null">
+                and name like  CONCAT('%',#{name},'%' )
+            </if>
+            <if test="state!=null">
+                and state = #{state}
+            </if>
+        </where>
+        order by create_time  desc
+        limit #{startNumber},#{pagzSize}
+    </select>
+
+    <select id="selectXbrlSmRoleAllList" resultMap="result_XbrlSmRole_Map">
+        select
+        <include refid="xbrl_sm_role_Column" />
+        from xbrl_sm_role
+        order by create_time  desc
+    </select>
+
+    <!-- 获得类名为:XbrlSmRole对应数据库中表的数据集合 -->
+    <select id="selectXbrlSmRoleById" resultMap="result_XbrlSmRole_Map">
+        select 
+        <include refid="xbrl_sm_role_Column" /> 
+        from xbrl_sm_role
+        where id = #{id}
+    </select> 
+
+
+    <select id="selectXbrlSmRoleByName" parameterType="java.lang.String"  resultMap="result_XbrlSmRole_Map">
+        select
+        <include refid="xbrl_sm_role_Column" />
+        from xbrl_sm_role
+        where name = #{name}
+    </select>
+
+    <!-- 将XbrlSmRole插入到对应数据库的表中,包括属性值为null的数据-->
+    <insert id="insertXbrlSmRole" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmRole">
+        insert into xbrl_sm_role(id,name,state,remark,create_user,create_time,update_user,update_time) 
+        values(#{id},#{name},#{state},#{remark},#{createUser},#{createTime},#{updateUser},#{updateTime})
+    </insert>
+
+    <!--删除角色role信息-->
+    <delete id="deleteXbrlSmRole" parameterType="java.lang.Long">
+        delete from xbrl_sm_role where id = #{id}
+    </delete>
+
+    <!--更新角色Role信息-->
+    <update id="updateXbrlSmRole" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmRole">
+        update xbrl_sm_role set
+             name=#{name}
+            ,state=#{state}
+            ,remark=#{remark}
+            ,update_user=#{updateUser}
+            ,update_time=#{updateTime}
+        where id=#{id}
+    </update>
+
+</mapper>

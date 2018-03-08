@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changhong.xbrl.sysmanage.dao.XbrlSmCompanyUserMapper">
+    <!-- XbrlSmCompanyUser的resultMap,column是给数据库列起的别名,它对应property类的属性-->
+    <resultMap id="result_XbrlSmCompanyUser_Map" type="com.changhong.xbrl.sysmanage.domain.XbrlSmCompanyUser">
+        <result column="company_id" property="companyId" />
+        <result column="user_id" property="userId" />
+    </resultMap>
+
+    <!-- 数据库中表名为:xbrl_sm_company_user的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->
+    <sql id="xbrl_sm_company_user_Column">
+        xbrl_sm_company_user.company_id as company_id
+        ,xbrl_sm_company_user.user_id as user_id
+    </sql>
+
+    <!--获得类名为:XbrlSmCompanyUser对应的数据库表的数据总行数 -->
+    <select id="getXbrlSmCompanyUserRowCount" resultType="java.lang.Long">
+        select count(*) from xbrl_sm_company_user
+    </select>
+    <!-- 获得类名为:XbrlSmCompanyUser对应数据库中表的数据集合 -->
+    <select id="selectXbrlSmCompanyUser" resultMap="result_XbrlSmCompanyUser_Map">
+        select 
+        <include refid="xbrl_sm_company_user_Column" /> 
+        from xbrl_sm_company_user
+    </select> 
+
+    <!-- 将XbrlSmCompanyUser插入到对应数据库的表中,包括属性值为null的数据-->
+
+    <insert id="insertXbrlSmCompanyUser" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmCompanyUser">
+        insert into xbrl_sm_company_user(company_id,user_id) 
+        values(#{companyId},#{userId})
+    </insert>
+
+    <!-- 将XbrlSmCompanyUser中属性值不为null的数据,插入到对应数据库的表中-->
+    <insert id="insertNonEmptyXbrlSmCompanyUser" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmCompanyUser">
+        insert into xbrl_sm_company_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="companyId != null">company_id,</if>
+            <if test="userId != null">user_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyId != null"> #{companyId},</if>
+            <if test="userId != null"> #{userId},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertXbrlSmCompanyUserBatch" parameterType="java.util.List">
+        insert into xbrl_sm_company_user (company_id,user_id)
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.companyId},#{item.userId})
+        </foreach>
+    </insert>
+
+    <!-- 通过XbrlSmCompanyUser的user_id列表将数据库表中对应的数据删除-->
+    <delete id="deleteXbrlSmCompanyUserByUserIds">
+        delete from xbrl_sm_company_user
+        where user_id in
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 通过XbrlSmCompanyUser的user_id将数据库表中对应的数据删除-->
+    <delete id="deleteXbrlSmCompanyUserById" parameterType="java.lang.Integer">
+        delete from xbrl_sm_company_user
+        where user_id = #{param1}
+    </delete>
+
+    <!-- 通过XbrlSmCompanyUser的company_id将数据库表中对应的数据删除-->
+    <delete id="deleteXbrlSmCompanyUserByCompanyId" parameterType="java.lang.Integer">
+        delete from xbrl_sm_company_user
+        where company_id = #{param1}
+    </delete>
+
+</mapper>

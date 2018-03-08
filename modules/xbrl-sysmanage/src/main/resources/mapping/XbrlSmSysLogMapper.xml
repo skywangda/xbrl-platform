@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changhong.xbrl.sysmanage.dao.XbrlSmSysLogMapper">
+
+    <!-- XbrlSmRole的resultMap,column是给数据库列起的别名,它对应property类的属性-->
+    <resultMap id="result_XbrlSmLog_Map" type="com.changhong.xbrl.sysmanage.domain.XbrlSmLog">
+        <result column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="operation" property="operation" />
+        <result column="method" property="method" />
+        <result column="params" property="params" />
+        <result column="time" property="time" />
+        <result column="ip" property="ip" />
+        <result column="createDate" property="createDate" />
+    </resultMap>
+
+    <!-- 数据库中表名为xbrl_sm_log的列名-->
+    <sql id="xbrl_sm_log_Column">
+        xbrl_sm_log.id as id
+        ,xbrl_sm_log.username as username
+        ,xbrl_sm_log.operation as operation
+        ,xbrl_sm_log.method as method
+        ,xbrl_sm_log.params as params
+        ,xbrl_sm_log.time as time
+        ,xbrl_sm_log.ip as ip
+        ,xbrl_sm_log.createDate as createDate
+    </sql>
+
+    <!--数据分页查询-->
+    <select id="selectXbrlSmLogList" parameterType="java.util.HashMap" resultMap="result_XbrlSmLog_Map">
+        select
+        <include refid="xbrl_sm_log_Column" />
+        from xbrl_sm_log
+        <where>
+            <if test="key!=null">
+                OR username like  CONCAT('%',#{key},'%' )
+            </if>
+            <if test="key!=null">
+                OR method like  CONCAT('%',#{key},'%' )
+            </if>
+        </where>
+        order by createDate  desc
+        limit #{startNumber},#{pagzSize}
+    </select>
+
+    <!--获取数据总条数-->
+    <select id="getCount" parameterType="String" resultType="java.lang.Integer">
+        select count(*) from xbrl_sm_log
+        <where>
+            <if test="key!=null">
+                OR username like  CONCAT('%',#{key},'%' )
+            </if>
+            <if test="key!=null">
+                OR method like  CONCAT('%',#{key},'%' )
+            </if>
+        </where>
+    </select>
+
+    <!-- 获取Log详细信息 -->
+    <select id="selectXbrlSmLogById" parameterType="java.lang.Long" resultMap="result_XbrlSmLog_Map">
+        select
+        <include refid="xbrl_sm_log_Column" />
+        from xbrl_sm_log
+        where id = #{id}
+    </select>
+
+    <!--新增系统日志信息-->
+    <insert id="insertXbrlSmLog" parameterType="com.changhong.xbrl.sysmanage.domain.XbrlSmLog">
+        insert into xbrl_sm_log(id,username,operation,method,params,time,ip,createDate)
+        values(#{id},#{username},#{operation},#{method},#{params},#{time},#{ip},#{createDate})
+    </insert>
+
+</mapper>
